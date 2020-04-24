@@ -1,0 +1,7 @@
+<<scheduler>>Pmax=?[F "tasks_complete" ]; 
+
+// Min expected time to complete all tasks
+<<scheduler>>R{"time"}min=?[F "tasks_complete" ];
+
+// Min expected energy to complete all tasks
+<<scheduler>>R{"energy"}min=?[F "tasks_complete" ]; 

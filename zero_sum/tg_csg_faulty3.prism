@@ -1,0 +1,357 @@
+csg
+
+// in csgs players just control modules not actions
+
+player scheduler 
+	sched
+endplayer
+player processor1 
+	P1
+endplayer
+player processor2 
+	P2
+endplayer
+player processor3
+	P3
+endplayer
+
+const int k1;
+const int k2;
+const int k3 = k1;
+const double p;
+
+
+// tasks need to be in separate modules as two tasks can finish at the same time
+// these modules are not under the control of any player and just react to the actions of players
+module task1
+
+	task1 : [0..4]; // A+B
+
+	[p1_task1_add] task1=0 -> (task1'=1);
+	[p2_task1_add] task1=0 -> (task1'=2);
+	[p3_task1_add] task1=0 -> (task1'=3);
+	[done1] task1=1 -> (task1'=4);
+	[done2] task1=2 -> (task1'=4);
+	[done3] task1=3 -> (task1'=4);
+	[failed1] task1=1 -> (task1'=0);
+	[failed2] task1=2 -> (task1'=0);
+	[failed3] task1=3 -> (task1'=0);
+
+endmodule
+
+module task2 = task1[task1=task2,p1_task1_add=p1_task2_mult,p2_task1_add=p2_task2_mult,p3_task1_add=p3_task2_mult] endmodule
+module task3 = task1[task1=task3,p1_task1_add=p1_task3_mult,p2_task1_add=p2_task3_mult,p3_task1_add=p3_task3_mult] endmodule
+module task4 = task1[task1=task4,p1_task1_add=p1_task4_add, p2_task1_add=p2_task4_add, p3_task1_add=p3_task4_add ] endmodule
+module task5 = task1[task1=task5,p1_task1_add=p1_task5_mult,p2_task1_add=p2_task5_mult,p3_task1_add=p3_task5_mult] endmodule
+module task6 = task1[task1=task6,p1_task1_add=p1_task6_add, p2_task1_add=p2_task6_add, p3_task1_add=p3_task6_add ] endmodule
+
+module sched	//scheduler
+	
+	// task status: 
+	// 0 - not started
+	// 1 - running on processor 1
+	// 2 - running on processor 2
+	// 3 - task complete
+	
+	// the scheduler can decide when to schedule tasks but only when previous tasks are complete
+	// and the processor is free
+	// can also choose to let time pass
+
+	// schedule tasks on processor 1
+	[p1_task1_add]  task1=0 & p1=0 -> true;
+	[p1_task2_mult] task2=0 & p1=0 -> true;
+	[p1_task3_mult] task3=0&task1=4 & p1=0 -> true;
+	[p1_task4_add]  task4=0&task1=4&task2=4 & p1=0 -> true;
+	[p1_task5_mult] task5=0&task3=4 & p1=0 -> true;
+	[p1_task6_add]  task6=0&task4=4&task5=4 & p1=0 -> true;
+
+	// schedule tasks on processor two
+	[p2_task1_add]  task1=0 & p2=0 -> true;
+	[p2_task2_mult] task2=0 & p2=0 -> true;
+	[p2_task3_mult] task3=0&task1=4 & p2=0 -> true;
+	[p2_task4_add]  task4=0&task1=4&task2=4 & p2=0 -> true;
+	[p2_task5_mult] task5=0&task3=4 & p2=0 -> true;
+	[p2_task6_add]  task6=0&task4=4&task5=4 & p2=0 -> true;
+
+	// schedule tasks on processor three
+	[p3_task1_add]  task1=0 & p3=0 -> true;
+	[p3_task2_mult] task2=0 & p3=0 -> true;
+	[p3_task3_mult] task3=0&task1=4 & p3=0 -> true;
+	[p3_task4_add]  task4=0&task1=4&task2=4 & p3=0 -> true;
+	[p3_task5_mult] task5=0&task3=4 & p3=0 -> true;
+	[p3_task6_add]  task6=0&task4=4&task5=4 & p3=0 -> true;
+
+	// let time pass
+	[time0] true -> true;
+	
+
+endmodule
+
+// when time can pass in processor 1
+formula invariant1 = (p1=1=>x1+1<=2)&(p1=2=>x1+1<=3)&(p1=3=>x1+1<=0);
+
+module P1	//processor1
+
+	p1 : [0..3]; // p1=0 idle , p1=1 addition, p1=2 multiplication, p1=3 fail
+	f1 : [0..k1+1];
+	x1 : [0..4];
+
+	// a processors only decision is between letting time pass and when a task completes
+	// can only let time pass when the invariant remains satisfied
+	
+	// however if one of the other players performs an action which is not letting time pass
+	// no time passes
+	// and if the scheduler schedules a task on this process then the state changes
+
+	// lets time pass but addition is scheduled
+	[time1,p1_task1_add] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task3_add] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task4_add] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task5_add] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task6_add] p1=0 -> (p1'=1) & (x1'=0);
+	// addition ends (processor chooses this over letting time pass
+	[done1] (p1=1)&(x1=2) -> (p1'=0) & (x1'=0);
+	[fail1] (p1=1)&(x1=2)&(f1<k1) -> p : (f1'=f1+1) & (p1'=3) & (x1'=0) + 1-p : (f1'=f1+1) & (p1'=1);
+
+	// lets time pass but multiplication is scheduled
+	[time1,p1_task1_mult] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task4_mult] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task5_mult] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task6_mult] p1=0 -> (p1'=2) & (x1'=0);
+	// addition ends (processor chooses this over letting time pass
+	[done1] (p1=2)&(x1=3) -> (p1'=0) & (x1'=0);
+	[fail1] (p1=2)&(x1=3)&(f1<k1) -> p : (f1'=f1+1) & (p1'=3) & (x1'=0) + 1-p : (f1'=f1+1) & (p1'=2);
+	
+	// lets time pass, but time does not pass as one of the other players wants to do somethin
+	[time1,p2_task1_add] invariant1 -> true;
+	[time1,p2_task2_add] invariant1 -> true;
+	[time1,p2_task3_add] invariant1 -> true;
+	[time1,p2_task4_add] invariant1 -> true;
+	[time1,p2_task5_add] invariant1 -> true;
+	[time1,p2_task6_add] invariant1 -> true;
+	[time1,p2_task1_mult] invariant1 -> true;
+	[time1,p2_task2_mult] invariant1 -> true;
+	[time1,p2_task3_mult] invariant1 -> true;
+	[time1,p2_task4_mult] invariant1 -> true;
+	[time1,p2_task5_mult] invariant1 -> true;
+	[time1,p2_task6_mult] invariant1 -> true;
+	[time1,p3_task1_add] invariant1 -> true;
+	[time1,p3_task2_add] invariant1 -> true;
+	[time1,p3_task3_add] invariant1 -> true;
+	[time1,p3_task4_add] invariant1 -> true;
+	[time1,p3_task5_add] invariant1 -> true;
+	[time1,p3_task6_add] invariant1 -> true;
+	[time1,p3_task1_mult] invariant1 -> true;
+	[time1,p3_task2_mult] invariant1 -> true;
+	[time1,p3_task3_mult] invariant1 -> true;
+	[time1,p3_task4_mult] invariant1 -> true;
+	[time1,p3_task5_mult] invariant1 -> true;
+	[time1,p3_task6_mult] invariant1 -> true;
+
+	[time1,done2,time3,time0] invariant1 -> true;
+	[time1,fail2,time3,time0] invariant1 -> true;
+	[time1,failed2,time3,time0] invariant1 -> true;
+	[time1,time2,failed3,time0] invariant1 -> true;
+	[time1,fail2,failed3,time0] invariant1 -> true;
+	[time1,failed2,failed3,time0] invariant1 -> true;
+	[time1,time2,done3,time0] invariant1 -> true;
+	[time1,fail2,done3,time0] invariant1 -> true;
+	[time1,failed2,done3,time0] invariant1 -> true;
+	[time1,time2,fail3,time0] invariant1 -> true;
+	[time1,fail2,fail3,time0] invariant1 -> true;
+	[time1,failed2,fail3,time0] invariant1 -> true;
+	[time1,done2,failed3,time0] invariant1 -> true;
+	[time1,done2,done3,time0] invariant1 -> true;
+	[time1,done2,fail3,time0] invariant1 -> true;
+
+	// p1 failed
+	[failed1] p1=3 -> (p1'=0) & (x1'=0);
+	// time actually passes as all want time to pas
+	[time1,time2,time3,time0] invariant1 -> 1.0 : (x1'=min(x1+1,4));
+
+	
+endmodule
+
+// when time can pass in processor 2
+formula invariant2 = (p2=1=>x2+1<=5)&(p2=2=>x2+1<=7)&(p2=3=>x2+1<=0);
+
+module P2	//processor2
+	p2 : [0..3]; // p2=0 idle , p2=1 addition, p2=2 multiplication, p2=3 fail
+	f2 : [0..k2+1];
+	x2 : [0..8];
+	
+	// addition
+	[time2,p2_task1_add] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task4_add] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task5_add] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task6_add] p2=0 -> (p2'=1) & (x2'=0);
+	[done2] (p2=1)&(x2=5) -> (p2'=0) & (x2'=0);
+	//addition fails
+	[fail2] (p2=2)&(x2=5)&(f2<k2) -> p : (f2'=f2+1) & (p2'=3) & (x2'=0) + 1-p : (f2'=f2+1) & (p2'=1);
+
+	// multiplication
+	[time2,p2_task1_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task4_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task5_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task6_mult] p2=0 -> (p2'=2) & (x2'=0);
+	[done2] (p2=2)&(x2=7) -> (p2'=0) & (x2'=0);
+	//multiplication fails
+	[fail2] (p2=2)&(x2=7)&(f2<k2) -> p : (f2'=f2+1) & (p2'=3) & (x2'=0) + 1-p : (f2'=f2+1) & (p2'=2);
+
+	// loop
+	[time2,p1_task1_add] invariant2 -> true;
+	[time2,p1_task2_add] invariant2 -> true;
+	[time2,p1_task3_add] invariant2 -> true;
+	[time2,p1_task4_add] invariant2 -> true;
+	[time2,p1_task5_add] invariant2 -> true;
+	[time2,p1_task6_add] invariant2 -> true;
+	[time2,p1_task1_mult] invariant2 -> true;
+	[time2,p1_task2_mult] invariant2 -> true;
+	[time2,p1_task3_mult] invariant2 -> true;
+	[time2,p1_task4_mult] invariant2 -> true;
+	[time2,p1_task5_mult] invariant2 -> true;
+	[time2,p1_task6_mult] invariant2 -> true;
+	[time2,p3_task1_add] invariant2 -> true;
+	[time2,p3_task2_add] invariant2 -> true;
+	[time2,p3_task3_add] invariant2 -> true;
+	[time2,p3_task4_add] invariant2 -> true;
+	[time2,p3_task5_add] invariant2 -> true;
+	[time2,p3_task6_add] invariant2 -> true;
+	[time2,p3_task1_mult] invariant2 -> true;
+	[time2,p3_task2_mult] invariant2 -> true;
+	[time2,p3_task3_mult] invariant2 -> true;
+	[time2,p3_task4_mult] invariant2 -> true;
+	[time2,p3_task5_mult] invariant2 -> true;
+	[time2,p3_task6_mult] invariant2 -> true;
+
+	[time2,done1,time3,time0] invariant2 -> true;
+	[time2,fail1,time3,time0] invariant2 -> true;
+	[time2,failed1,time3,time0] invariant2 -> true;
+	[time2,time1,failed3,time0] invariant2 -> true;
+	[time2,fail1,failed3,time0] invariant2 -> true;
+	[time2,failed1,failed3,time0] invariant2 -> true;
+	[time2,time1,done3,time0] invariant2 -> true;
+	[time2,fail1,done3,time0] invariant2 -> true;
+	[time2,failed1,done3,time0] invariant2 -> true;
+	[time2,time1,fail3,time0] invariant2 -> true;
+	[time2,fail1,fail3,time0] invariant2 -> true;
+	[time2,failed1,fail3,time0] invariant2 -> true;
+	[time2,done1,failed3,time0] invariant2 -> true;
+	[time2,done1,done3,time0] invariant2 -> true;
+	[time2,done1,fail3,time0] invariant2 -> true;
+
+	// p2 failed
+	[failed2] p2=3 -> (p2'=0) & (x2'=0);
+	// time passage
+	[time2,time1,time3,time0] invariant2 -> 1.0 : (x2'=min(x2+1,8));
+
+endmodule
+
+// when time can pass in processor 3
+formula invariant3 = (p3=1=>x3+1<=3)&(p3=2=>x3+1<=5)&(p3=3=>x3+1<=0);
+
+module P3	//processor3
+	p3 : [0..3]; // p3=0 idle , p3=1 addition, p3=2 multiplication, p3=3 fail
+	f3 : [0..k3+1];
+	x3 : [0..6];
+	
+	// addition
+	[time3,p3_task1_add] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task4_add] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task5_add] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task6_add] p3=0 -> (p3'=1) & (x3'=0);
+	[done3] (p3=1)&(x3=3) -> (p3'=0) & (x3'=0);
+	//addition fails
+	[fail3] (p3=1)&(x3=3)&(f3<k3) -> p : (f3'=f3+1) & (p3'=3) & (x3'=0) + 1-p : (f3'=f3+1) & (p3'=1);
+
+	// multiplication
+	[time3,p3_task1_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task4_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task5_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task6_mult] p3=0 -> (p3'=2) & (x3'=0);
+	[done3] (p3=2)&(x3=5) -> (p3'=0) & (x3'=0);
+	//multiplication fails
+	[fail3] (p3=2)&(x3=5)&(f3<k3) -> p : (f3'=f3+1) & (p3'=3) & (x3'=0) + 1-p : (f3'=f3+1) & (p3'=2);
+
+	// loop
+	[time3,p1_task1_add] invariant3 -> true;
+	[time3,p1_task2_add] invariant3 -> true;
+	[time3,p1_task3_add] invariant3 -> true;
+	[time3,p1_task4_add] invariant3 -> true;
+	[time3,p1_task5_add] invariant3 -> true;
+	[time3,p1_task6_add] invariant3 -> true;
+	[time3,p1_task1_mult] invariant3 -> true;
+	[time3,p1_task2_mult] invariant3 -> true;
+	[time3,p1_task3_mult] invariant3 -> true;
+	[time3,p1_task4_mult] invariant3 -> true;
+	[time3,p1_task5_mult] invariant3 -> true;
+	[time3,p1_task6_mult] invariant3 -> true;
+	[time3,p2_task1_add] invariant3 -> true;
+	[time3,p2_task2_add] invariant3 -> true;
+	[time3,p2_task3_add] invariant3 -> true;
+	[time3,p2_task4_add] invariant3 -> true;
+	[time3,p2_task5_add] invariant3 -> true;
+	[time3,p2_task6_add] invariant3 -> true;
+	[time3,p2_task1_mult] invariant3 -> true;
+	[time3,p2_task2_mult] invariant3 -> true;
+	[time3,p2_task3_mult] invariant3 -> true;
+	[time3,p2_task4_mult] invariant3 -> true;
+	[time3,p2_task5_mult] invariant3 -> true;
+	[time3,p2_task6_mult] invariant3 -> true;
+
+	[time3,done1,time2,time0] invariant3 -> true;
+	[time3,fail1,time2,time0] invariant3 -> true;
+	[time3,failed1,time2,time0] invariant3 -> true;
+	[time3,time1,failed2,time0] invariant3 -> true;
+	[time3,fail1,failed2,time0] invariant3 -> true;
+	[time3,failed1,failed2,time0] invariant3 -> true;
+	[time3,time1,done2,time0] invariant3 -> true;
+	[time3,fail1,done2,time0] invariant3 -> true;
+	[time3,failed1,done2,time0] invariant3 -> true;
+	[time3,time1,fail2,time0] invariant3 -> true;
+	[time3,fail1,fail2,time0] invariant3 -> true;
+	[time3,failed1,fail2,time0] invariant3 -> true;
+	[time3,done1,done2,time0] invariant3 -> true;
+	[time3,done1,failed2,time0] invariant3 -> true;
+	[time3,done1,fail2,time0] invariant3 -> true;
+
+	
+	// p3 failed
+	[failed3] p3=3 -> (p3'=0) & (x3'=0);
+	// time passage
+	[time3,time1,time2,time0] invariant3 -> 1.0 : (x3'=min(x3+1,6));
+
+endmodule
+
+// reward structure: elapsed time (only when all agree)
+rewards "time" 
+
+	[time0,time1,time2,time3] true : 1;
+
+endrewards
+
+// reward structures: energy consumption (again time passes only when all agree)
+rewards "energy"
+
+	[time0,time1,time2,time3] p1=0 : 10;
+	[time0,time1,time2,time3] p1>0 : 90;
+	[time0,time1,time2,time3] p2=0 : 20;
+	[time0,time1,time2,time3] p2>0 : 30;
+	[time0,time1,time2,time3] p3=0 : 20;
+	[time0,time1,time2,time3] p3>0 : 30;
+
+endrewards
+
+// target state (all tasks complete)
+label "tasks_complete" = (task6=4);
