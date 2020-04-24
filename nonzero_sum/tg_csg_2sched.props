@@ -1,0 +1,10 @@
+<<scheduler1,processor1,processor2,processor3:scheduler2>>max=?(P[F "tasks_complete1" ]+P[F "tasks_complete2" ]); 
+
+// Min expected time to complete all tasks
+<<scheduler1,processor1,processor2,processor3:scheduler2>>min=?(R{"time"}[F "tasks_complete1" ]+R{"time"}[F "tasks_complete2" ]);
+
+// Min expected energy to complete all tasks
+<<scheduler1,processor1,processor2,processor3:scheduler2>>min=?(R{"energy1"}[F "tasks_complete1" ]+ R{"energy2"}[F "tasks_complete2" ]); 
+
+// Min steps to complete all tasks
+<<scheduler1,processor1,processor2,processor3:scheduler2>>min=?(R{"steps"}[F "tasks_complete1" ]+ R{"steps"}[F "tasks_complete2" ]); 

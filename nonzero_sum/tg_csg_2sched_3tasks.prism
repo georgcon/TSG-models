@@ -1,0 +1,1025 @@
+csg
+
+// in csgs players just control modules not actions
+
+player scheduler1 
+	sched1
+endplayer
+player scheduler2 
+	sched2
+endplayer
+
+player processor1 
+	P1
+endplayer
+
+player processor2 
+	P2
+endplayer
+
+player processor3 
+	P3
+endplayer
+
+// tasks need to be in separate modules as two tasks can finish at the same time
+// these modules are not under the control of any player and just react to the actions of players
+module task1_1
+
+	task1_1 : [0..4]; // A+B
+
+	// here we need to include all actions for sched 1 not on processor 1
+	[p1_task1_mult_1,time0_2] task1_1=0 -> (task1_1'=1);
+	[p2_task1_mult_1,time0_2] task1_1=0 -> (task1_1'=2);
+	[p3_task1_mult_1,time0_2] task1_1=0 -> (task1_1'=3);
+
+	// here we need to include all actions for sched 1 on processor 1
+	[p1_task1_mult_1,p1_task1_mult_2] task1_1=0 -> (task1_1'=0);
+	[p1_task1_mult_1,p1_task2_mult_2] task1_1=0 -> (task1_1'=0);
+	[p1_task1_mult_1,p1_task3_add_2] task1_1=0 -> (task1_1'=0);
+	
+	[p1_task1_mult_1,p2_task1_mult_2] task1_1=0 -> (task1_1'=1);
+	[p1_task1_mult_1,p2_task2_mult_2] task1_1=0 -> (task1_1'=1);
+	[p1_task1_mult_1,p2_task3_add_2] task1_1=0 -> (task1_1'=1);
+	
+	[p1_task1_mult_1,p3_task1_mult_2] task1_1=0 -> (task1_1'=1);
+	[p1_task1_mult_1,p3_task2_mult_2] task1_1=0 -> (task1_1'=1);
+	[p1_task1_mult_1,p3_task3_add_2] task1_1=0 -> (task1_1'=1);
+	
+	// here we need to include all actions for sched 1 on processor 2
+	[p2_task1_mult_1,p2_task1_mult_2] task1_1=0 -> (task1_1'=0);
+	[p2_task1_mult_1,p2_task2_mult_2] task1_1=0 -> (task1_1'=0);
+	[p2_task1_mult_1,p2_task3_add_2] task1_1=0 -> (task1_1'=0);
+
+	[p2_task1_mult_1,p1_task1_mult_2] task1_1=0 -> (task1_1'=2);
+	[p2_task1_mult_1,p1_task2_mult_2] task1_1=0 -> (task1_1'=2);
+	[p2_task1_mult_1,p1_task3_add_2] task1_1=0 -> (task1_1'=2);
+
+	[p2_task1_mult_1,p3_task1_mult_2] task1_1=0 -> (task1_1'=2);
+	[p2_task1_mult_1,p3_task2_mult_2] task1_1=0 -> (task1_1'=2);
+	[p2_task1_mult_1,p3_task3_add_2] task1_1=0 -> (task1_1'=2);
+
+
+	// here we need to include all actions for sched 1 on processor 3
+	[p3_task1_mult_1,p3_task1_mult_2] task1_1=0 -> (task1_1'=0);
+	[p3_task1_mult_1,p3_task2_mult_2] task1_1=0 -> (task1_1'=0);
+	[p3_task1_mult_1,p3_task3_add_2] task1_1=0 -> (task1_1'=0);
+
+	[p3_task1_mult_1,p1_task1_mult_2] task1_1=0 -> (task1_1'=3);
+	[p3_task1_mult_1,p1_task2_mult_2] task1_1=0 -> (task1_1'=3);
+	[p3_task1_mult_1,p1_task3_add_2] task1_1=0 -> (task1_1'=3);
+
+	[p3_task1_mult_1,p2_task1_mult_2] task1_1=0 -> (task1_1'=3);
+	[p3_task1_mult_1,p2_task2_mult_2] task1_1=0 -> (task1_1'=3);
+	[p3_task1_mult_1,p2_task3_add_2] task1_1=0 -> (task1_1'=3);
+
+	
+	[done1] task1_1=1 -> (task1_1'=4);
+	[done2] task1_1=2 -> (task1_1'=4);
+	[done3] task1_1=3 -> (task1_1'=4);
+
+
+endmodule
+
+module task2_1
+
+	task2_1 : [0..4]; // A*B
+
+	// here we need to include all actions for sched 2 not on processor 1
+	[p1_task2_add_1,time0_2] task2_1=0 -> (task2_1'=1);
+	[p2_task2_add_1,time0_2] task2_1=0 -> (task2_1'=2);
+	[p3_task2_add_1,time0_2] task2_1=0 -> (task2_1'=3);
+
+	// here we need to include all actions for sched 2 on processor 1
+	[p1_task2_add_1,p1_task1_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p1_task2_add_1,p1_task2_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p1_task2_add_1, p1_task3_add_2] task2_1 =0 -> (task2_1'=0);
+		
+	[p1_task2_add_1,p2_task1_mult_2] task2_1 =0 -> (task2_1'=1);
+	[p1_task2_add_1,p2_task2_mult_2] task2_1 =0 -> (task2_1'=1);
+	[p1_task2_add_1, p2_task3_add_2] task2_1 =0 -> (task2_1'=1);
+		
+	[p1_task2_add_1,p3_task1_mult_2] task2_1 =0 -> (task2_1'=1);
+	[p1_task2_add_1,p3_task2_mult_2] task2_1 =0 -> (task2_1'=1);
+	[p1_task2_add_1, p3_task3_add_2] task2_1 =0 -> (task2_1'=1);
+		
+	// here we need to include all actions for sched 2 on processor 2
+	[p2_task2_add_1,p2_task1_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p2_task2_add_1,p2_task2_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p2_task2_add_1, p2_task3_add_2] task2_1 =0 -> (task2_1'=0);
+
+	[p2_task2_add_1,p1_task1_mult_2] task2_1 =0 -> (task2_1'=2);
+	[p2_task2_add_1,p1_task2_mult_2] task2_1 =0 -> (task2_1'=2);
+	[p2_task2_add_1, p1_task3_add_2] task2_1 =0 -> (task2_1'=2);
+
+	[p2_task2_add_1,p3_task1_mult_2] task2_1 =0 -> (task2_1'=2);
+	[p2_task2_add_1,p3_task2_mult_2] task2_1 =0 -> (task2_1'=2);
+	[p2_task2_add_1, p3_task3_add_2] task2_1 =0 -> (task2_1'=2);
+
+
+	// here we need to include all actions for sched 2 on processor 3
+	[p3_task2_add_1,p3_task1_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p3_task2_add_1,p3_task2_mult_2] task2_1 =0 -> (task2_1'=0);
+	[p3_task2_add_1, p3_task3_add_2] task2_1 =0 -> (task2_1'=0);
+
+	[p3_task2_add_1,p1_task1_mult_2] task2_1 =0 -> (task2_1'=3);
+	[p3_task2_add_1,p1_task2_mult_2] task2_1 =0 -> (task2_1'=3);
+	[p3_task2_add_1, p1_task3_add_2] task2_1 =0 -> (task2_1'=3);
+
+	[p3_task2_add_1,p2_task1_mult_2] task2_1 =0 -> (task2_1'=3);
+	[p3_task2_add_1,p2_task2_mult_2] task2_1 =0 -> (task2_1'=3);
+	[p3_task2_add_1, p2_task3_add_2] task2_1 =0 -> (task2_1'=3);
+
+	
+	[done1] task2_1=1 -> (task2_1'=4);
+	[done2] task2_1=2 -> (task2_1'=4);
+	[done3] task2_1=3 -> (task2_1'=4);
+
+
+endmodule
+
+
+module task3_1
+
+	task3_1 : [0..4]; // A+B
+
+	// here we need to include all actions for sched 1 not on processor 1
+	[p1_task3_mult_1,time0_2] task3_1 =0 -> (task3_1'=1);
+	[p2_task3_mult_1,time0_2] task3_1 =0 -> (task3_1'=2);
+	[p3_task3_mult_1,time0_2] task3_1 =0 -> (task3_1'=3);
+
+	// here we need to include all actions for sched 1 on processor 1
+	[p1_task3_mult_1,p1_task1_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p1_task3_mult_1,p1_task2_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p1_task3_mult_1, p1_task3_add_2] task3_1 =0 -> (task3_1'=0);
+
+	[p1_task3_mult_1,p2_task1_mult_2] task3_1 =0 -> (task3_1'=1);
+	[p1_task3_mult_1,p2_task2_mult_2] task3_1 =0 -> (task3_1'=1);
+	[p1_task3_mult_1, p2_task3_add_2] task3_1 =0 -> (task3_1'=1);
+
+	[p1_task3_mult_1,p3_task1_mult_2] task3_1 =0 -> (task3_1'=1);
+	[p1_task3_mult_1,p3_task2_mult_2] task3_1 =0 -> (task3_1'=1);
+	[p1_task3_mult_1, p3_task3_add_2] task3_1 =0 -> (task3_1'=1);
+
+	
+	// here we need to include all actions for sched 1 on processor 2
+	[p2_task3_mult_1,p2_task1_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p2_task3_mult_1,p2_task2_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p2_task3_mult_1, p2_task3_add_2] task3_1 =0 -> (task3_1'=0);
+
+	[p2_task3_mult_1,p1_task1_mult_2] task3_1 =0 -> (task3_1'=2);
+	[p2_task3_mult_1,p1_task2_mult_2] task3_1 =0 -> (task3_1'=2);
+	[p2_task3_mult_1, p1_task3_add_2] task3_1 =0 -> (task3_1'=2);
+
+	[p2_task3_mult_1,p3_task1_mult_2] task3_1 =0 -> (task3_1'=2);
+	[p2_task3_mult_1,p3_task2_mult_2] task3_1 =0 -> (task3_1'=2);
+	[p2_task3_mult_1, p3_task3_add_2] task3_1 =0 -> (task3_1'=2);
+
+
+	// here we need to include all actions for sched 1 on processor 3
+	[p3_task3_mult_1,p3_task1_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p3_task3_mult_1,p3_task2_mult_2] task3_1 =0 -> (task3_1'=0);
+	[p3_task3_mult_1, p3_task3_add_2] task3_1 =0 -> (task3_1'=0);
+
+	[p3_task3_mult_1,p1_task1_mult_2] task3_1 =0 -> (task3_1'=3);
+	[p3_task3_mult_1,p1_task2_mult_2] task3_1 =0 -> (task3_1'=3);
+	[p3_task3_mult_1, p1_task3_add_2] task3_1 =0 -> (task3_1'=3);
+
+	[p3_task3_mult_1,p2_task1_mult_2] task3_1 =0 -> (task3_1'=3);
+	[p3_task3_mult_1,p2_task2_mult_2] task3_1 =0 -> (task3_1'=3);
+	[p3_task3_mult_1, p2_task3_add_2] task3_1 =0 -> (task3_1'=3);
+	
+	[done1] task3_1 =1 -> (task3_1'=4);
+	[done2] task3_1 =2 -> (task3_1'=4);
+	[done3] task3_1 =3 -> (task3_1'=4);
+
+
+endmodule
+
+module task1_2
+
+	task1_2 : [0..4]; // A+B
+
+	// here we need to include all actions for sched 2 not on processor 1
+	[p1_task1_mult_2,time0_1] task1_2=0 -> (task1_2'=1);
+	[p2_task1_mult_2,time0_1] task1_2=0 -> (task1_2'=2);
+	[p3_task1_mult_2,time0_1] task1_2=0 -> (task1_2'=3);
+
+
+	// here we need to include all actions for sched 2 on processor 1
+	[p1_task1_mult_2,p1_task1_mult_1] task1_2=0 -> (task1_2'=0);
+	[p1_task1_mult_2,p1_task2_add_1] task1_2=0 -> (task1_2'=0);
+	[p1_task1_mult_2,p1_task3_mult_1] task1_2=0 -> (task1_2'=0);
+	
+	[p1_task1_mult_2,p2_task1_mult_1] task1_2=0 -> (task1_2'=1);
+	[p1_task1_mult_2,p2_task2_add_1] task1_2=0 -> (task1_2'=1);
+	[p1_task1_mult_2,p2_task3_mult_1] task1_2=0 -> (task1_2'=1);
+	
+	[p1_task1_mult_2,p3_task1_mult_1] task1_2=0 -> (task1_2'=1);
+	[p1_task1_mult_2,p3_task2_add_1] task1_2=0 -> (task1_2'=1);
+	[p1_task1_mult_2,p3_task3_mult_1] task1_2=0 -> (task1_2'=1);
+	
+	// here we need to include all actions for sched 2 on processor 2
+	[p2_task1_mult_2,p2_task1_mult_1] task1_2 =0 -> (task1_2'=0);
+	[p2_task1_mult_2,p2_task2_add_1] task1_2 =0 -> (task1_2'=0);
+	[p2_task1_mult_2,p2_task3_mult_1] task1_2 =0 -> (task1_2'=0);
+
+	[p2_task1_mult_2,p1_task1_mult_1] task1_2 =0 -> (task1_2'=2);
+	[p2_task1_mult_2,p1_task2_add_1] task1_2 =0 -> (task1_2'=2);
+	[p2_task1_mult_2,p1_task3_mult_1] task1_2 =0 -> (task1_2'=2);
+
+	[p2_task1_mult_2,p3_task1_mult_1] task1_2 =0 -> (task1_2'=2);
+	[p2_task1_mult_2,p3_task2_add_1] task1_2 =0 -> (task1_2'=2);
+	[p2_task1_mult_2,p3_task3_mult_1] task1_2 =0 -> (task1_2'=2);
+
+	// here we need to include all actions for sched 2 on processor 3
+	[p3_task1_mult_2,p3_task1_mult_1] task1_2 =0 -> (task1_2'=0);
+	[p3_task1_mult_2,p3_task2_add_1] task1_2 =0 -> (task1_2'=0);
+	[p3_task1_mult_2,p3_task3_mult_1] task1_2 =0 -> (task1_2'=0);
+	
+	[p3_task1_mult_2,p1_task1_mult_1] task1_2 =0 -> (task1_2'=3);
+	[p3_task1_mult_2,p1_task2_add_1] task1_2 =0 -> (task1_2'=3);
+	[p3_task1_mult_2,p1_task3_mult_1] task1_2 =0 -> (task1_2'=3);
+	
+	[p3_task1_mult_2,p2_task1_mult_1] task1_2 =0 -> (task1_2'=3);
+	[p3_task1_mult_2,p2_task2_add_1] task1_2 =0 -> (task1_2'=3);
+	[p3_task1_mult_2,p2_task3_mult_1] task1_2 =0 -> (task1_2'=3);
+	
+	[done1] task1_2=1 -> (task1_2'=4);
+	[done2] task1_2=2 -> (task1_2'=4);
+	[done3] task1_2=3 -> (task1_2'=4);
+
+
+endmodule
+
+module task2_2
+
+	task2_2 : [0..4]; // A+B
+
+	// here we need to include all actions for sched 2 not on processor 1
+	[p1_task2_mult_2,time0_1] task2_2=0 -> (task2_2'=1);
+	[p2_task2_mult_2,time0_1] task2_2=0 -> (task2_2'=2);
+	[p3_task2_mult_2,time0_1] task2_2=0 -> (task2_2'=3);
+
+
+	// here we need to include all actions for sched 2 on processor 1
+	[p1_task2_mult_2,p1_task1_mult_1] task2_2=0 -> (task2_2'=0);
+	[p1_task2_mult_2,p1_task2_add_1] task2_2=0 -> (task2_2'=0);
+	[p1_task2_mult_2,p1_task3_mult_1] task2_2=0 -> (task2_2'=0);
+
+	[p1_task2_mult_2,p2_task1_mult_1] task2_2=0 -> (task2_2'=1);
+	[p1_task2_mult_2,p2_task2_add_1] task2_2=0 -> (task2_2'=1);
+	[p1_task2_mult_2,p2_task3_mult_1] task2_2=0 -> (task2_2'=1);
+
+	[p1_task2_mult_2,p3_task1_mult_1] task2_2=0 -> (task2_2'=1);
+	[p1_task2_mult_2,p3_task2_add_1] task2_2=0 -> (task2_2'=1);
+	[p1_task2_mult_2,p3_task3_mult_1] task2_2=0 -> (task2_2'=1);
+
+	// here we need to include all actions for sched 2 on processor 2
+	[p2_task2_mult_2,p2_task1_mult_1] task2_2=0 -> (task2_2'=0);
+	[p2_task2_mult_2,p2_task2_add_1] task2_2=0 -> (task2_2'=0);
+	[p2_task2_mult_2,p2_task3_mult_1] task2_2=0 -> (task2_2'=0);
+
+	[p2_task2_mult_2,p1_task1_mult_1] task2_2=0 -> (task2_2'=2);
+	[p2_task2_mult_2,p1_task2_add_1] task2_2=0 -> (task2_2'=2);
+	[p2_task2_mult_2,p1_task3_mult_1] task2_2=0 -> (task2_2'=2);
+
+	[p2_task2_mult_2,p3_task1_mult_1] task2_2=0 -> (task2_2'=2);
+	[p2_task2_mult_2,p3_task2_add_1] task2_2=0 -> (task2_2'=2);
+	[p2_task2_mult_2,p3_task3_mult_1] task2_2=0 -> (task2_2'=2);
+
+	// here we need to include all actions for sched 2 on processor 3
+	[p3_task2_mult_2,p3_task1_mult_1] task2_2=0 -> (task2_2'=0);
+	[p3_task2_mult_2,p3_task2_add_1] task2_2=0 -> (task2_2'=0);
+	[p3_task2_mult_2,p3_task3_mult_1] task2_2=0 -> (task2_2'=0);	
+
+	[p3_task2_mult_2,p1_task1_mult_1] task2_2=0 -> (task2_2'=3);
+	[p3_task2_mult_2,p1_task2_add_1] task2_2=0 -> (task2_2'=3);
+	[p3_task2_mult_2,p1_task3_mult_1] task2_2=0 -> (task2_2'=3);	
+
+	[p3_task2_mult_2,p2_task1_mult_1] task2_2=0 -> (task2_2'=3);
+	[p3_task2_mult_2,p2_task2_add_1] task2_2=0 -> (task2_2'=3);
+	[p3_task2_mult_2,p2_task3_mult_1] task2_2=0 -> (task2_2'=3);	
+
+	
+	[done1] task2_2=1 -> (task2_2'=4);
+	[done2] task2_2=2 -> (task2_2'=4);
+	[done3] task2_2=3 -> (task2_2'=4);
+
+
+endmodule
+
+module task3_2
+
+	task3_2 : [0..4]; // A+B
+
+	// here we need to include all actions for sched 2 not on processor 1
+	[p1_task3_add_2,time0_1] task3_2 =0 -> (task3_2'=1);
+	[p2_task3_add_2,time0_1] task3_2 =0 -> (task3_2'=2);
+	[p3_task3_add_2,time0_1] task3_2 =0 -> (task3_2'=3);
+
+
+	// here we need to include all actions for sched 2 on processor 1
+	[p1_task3_add_2,p1_task1_mult_1] task3_2 =0 -> (task3_2'=0);
+	[p1_task3_add_2,p1_task2_add_1] task3_2 =0 -> (task3_2'=0);
+	[p1_task3_add_2,p1_task3_mult_1] task3_2 =0 -> (task3_2'=0);	
+
+	[p1_task3_add_2,p2_task1_mult_1] task3_2 =0 -> (task3_2'=1);
+	[p1_task3_add_2,p2_task2_add_1] task3_2 =0 -> (task3_2'=1);
+	[p1_task3_add_2,p2_task3_mult_1] task3_2 =0 -> (task3_2'=1);	
+
+	[p1_task3_add_2,p3_task1_mult_1] task3_2 =0 -> (task3_2'=1);
+	[p1_task3_add_2,p3_task2_add_1] task3_2 =0 -> (task3_2'=1);
+	[p1_task3_add_2,p3_task3_mult_1] task3_2 =0 -> (task3_2'=1);	
+
+	// here we need to include all actions for sched 2 on processor 2
+	[p2_task3_add_2,p2_task1_mult_1] task3_2 =0 -> (task3_2'=0);
+	[p2_task3_add_2,p2_task2_add_1] task3_2 =0 -> (task3_2'=0);
+	[p2_task3_add_2,p2_task3_mult_1] task3_2 =0 -> (task3_2'=0);
+
+	[p2_task3_add_2,p1_task1_mult_1] task3_2 =0 -> (task3_2'=2);
+	[p2_task3_add_2,p1_task2_add_1] task3_2 =0 -> (task3_2'=2);
+	[p2_task3_add_2,p1_task3_mult_1] task3_2 =0 -> (task3_2'=2);
+
+	[p2_task3_add_2,p3_task1_mult_1] task3_2 =0 -> (task3_2'=2);
+	[p2_task3_add_2,p3_task2_add_1] task3_2 =0 -> (task3_2'=2);
+	[p2_task3_add_2,p3_task3_mult_1] task3_2 =0 -> (task3_2'=2);
+
+	// here we need to include all actions for sched 2 on processor 3
+	[p3_task3_add_2,p3_task1_mult_1] task3_2 =0 -> (task3_2'=0);
+	[p3_task3_add_2,p3_task2_add_1] task3_2 =0 -> (task3_2'=0);
+	[p3_task3_add_2,p3_task3_mult_1] task3_2 =0 -> (task3_2'=0);
+	
+	[p3_task3_add_2,p1_task1_mult_1] task3_2 =0 -> (task3_2'=3);
+	[p3_task3_add_2,p1_task2_add_1] task3_2 =0 -> (task3_2'=3);
+	[p3_task3_add_2,p1_task3_mult_1] task3_2 =0 -> (task3_2'=3);
+	
+	[p3_task3_add_2,p2_task1_mult_1] task3_2 =0 -> (task3_2'=3);
+	[p3_task3_add_2,p2_task2_add_1] task3_2 =0 -> (task3_2'=3);
+	[p3_task3_add_2,p2_task3_mult_1] task3_2 =0 -> (task3_2'=3);
+	
+	[done1] task3_2 =1 -> (task3_2'=4);
+	[done2] task3_2 =2 -> (task3_2'=4);
+	[done3] task3_2 =3 -> (task3_2'=4);
+
+
+endmodule
+
+
+module sched1	//scheduler1
+	
+	// task status: 
+	// 0 - not started
+	// 1 - running on processor 1
+	// 2 - running on processor 2
+	// 4 - task complete
+	
+	// the scheduler can decide when to schedule tasks but only when previous tasks are complete
+	// and the processor is free
+	// can also choose to let time pass
+
+	// schedule tasks on processor 1
+	[p1_task1_mult_1]  task1_1=0 & p1=0 -> true;
+	[p1_task2_add_1]  task2_1=0 & p1=0 -> true;
+	[p1_task3_mult_1]  task3_1=0&task1_1=4&task2_1=4 & p1=0 -> true;
+	
+	// schedule tasks on processor 2
+	[p2_task1_mult_1]  task1_1=0 & p2=0 -> true;
+	[p2_task2_add_1]  task2_1=0 & p2=0 -> true;
+	[p2_task3_mult_1]  task3_1=0&task1_1=4&task2_1=4 & p2=0 -> true;
+	
+	// schedule tasks on processor 3
+	[p3_task1_mult_1]  task1_1=0 & p3=0 -> true;
+	[p3_task2_add_1]  task2_1=0 & p3=0 -> true;
+	[p3_task3_mult_1]  task3_1=0&task1_1=4&task2_1=4 & p3=0 -> true;
+
+	// let time pass
+	[time0_1] true -> true;
+	
+endmodule
+
+module sched2	//scheduler2
+	
+	// task status: 
+	// 0 - not started
+	// 1 - running on processor 1
+	// 2 - running on processor 2
+	// 4 - task complete
+	
+	// the scheduler can decide when to schedule tasks but only when previous tasks are complete
+	// and the processor is free
+	// can also choose to let time pass
+
+	// schedule tasks on processor 1
+	[p1_task1_mult_2]  task1_2=0 & p1=0 -> true;
+	[p1_task2_mult_2]  task2_2=0 & p1=0 -> true;
+	[p1_task3_add_2]  task3_2=0&task1_2=4&task2_2=4 & p1=0 -> true;
+	
+	// schedule tasks on processor 2
+	[p2_task1_mult_2]  task1_2=0 & p2=0 -> true;
+	[p2_task2_mult_2]  task2_2=0 & p2=0 -> true;
+	[p2_task3_add_2]  task3_2=0&task1_2=4&task2_2=4 & p2=0 -> true;
+
+	// schedule tasks on processor 3
+	[p3_task1_mult_2]  task1_2=0 & p3=0 -> true;
+	[p3_task2_mult_2]  task2_2=0 & p3=0 -> true;
+	[p3_task3_add_2]  task3_2=0&task1_2=4&task2_2=4 & p3=0 -> true;
+
+	// let time pass
+	[time0_2] true -> true;
+	
+endmodule
+
+// when time can pass in processor 1
+formula invariant1 = (p1=1=>x1+1<=2)&(p1=2=>x1+1<=3);
+
+module P1	//processor1
+
+	p1 : [0..2]; // p1=0 idle , p1=1 addition, p1=2 multiplication
+	x1 : [0..4];
+
+	// a processors only decision is between letting time pass and when a task completes
+	// can only let time pass when the invariant remains satisfied
+	
+	// however if one of the other players performs an action which is not letting time pass
+	// no time passes
+	// and if the scheduler schedules a task on this process then the state changes
+
+	// lets time pass but addition is scheduled
+	[time1,p1_task2_add_1,time0_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p2_task1_mult_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p2_task2_mult_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p2_task3_add_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p3_task1_mult_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p3_task2_mult_2] p1=0 -> (p1'=1) & (x1'=0);
+	[time1,p1_task2_add_1,p3_task3_add_2] p1=0 -> (p1'=1) & (x1'=0);
+
+	[time1,p1_task3_add_2,time0_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p2_task1_mult_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p2_task2_add_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p2_task3_mult_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p3_task1_mult_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p3_task2_add_1] p1=0 -> (p1'=1) & (x1'=0);
+	[time1, p1_task3_add_2,p3_task3_mult_1] p1=0 -> (p1'=1) & (x1'=0);
+
+	// addition ends (processor chooses this over letting time pass
+	[done1] (p1=1)&(x1=2) -> (p1'=0) & (x1'=0);
+
+	// lets time pass but multiplication is scheduled
+	[time1,p1_task1_mult_1,time0_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p2_task1_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p2_task2_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p2_task3_add_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p3_task1_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p3_task2_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_1,p3_task3_add_2] p1=0 -> (p1'=2) & (x1'=0);
+
+	[time1,p1_task3_mult_1,time0_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p2_task1_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p2_task2_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p2_task3_add_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p3_task1_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p3_task2_mult_2] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task3_mult_1,p3_task3_add_2] p1=0 -> (p1'=2) & (x1'=0);		
+
+	[time1,p1_task1_mult_2,time0_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p2_task1_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p2_task2_add_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p2_task3_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p3_task1_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p3_task2_add_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task1_mult_2,p3_task3_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	
+	[time1,p1_task2_mult_2,time0_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p2_task1_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p2_task2_add_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p2_task3_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p3_task1_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p3_task2_add_1] p1=0 -> (p1'=2) & (x1'=0);
+	[time1,p1_task2_mult_2,p3_task3_mult_1] p1=0 -> (p1'=2) & (x1'=0);
+
+	// multiplication ends (processor chooses this over letting time pass
+	[done1] (p1=2)&(x1=3) -> (p1'=0) & (x1'=0);
+
+	// both want to schedule on p1
+	[time1,p1_task1_mult_1,p1_task1_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task1_mult_1,p1_task2_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task1_mult_1,p1_task3_add_2] p1=0 -> (p1'=0) & (x1'=0);
+
+	[time1,p1_task2_add_1,p1_task1_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task2_add_1,p1_task2_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task2_add_1,p1_task3_add_2] p1=0 -> (p1'=0) & (x1'=0);
+
+	[time1,p1_task3_mult_1,p1_task1_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task3_mult_1,p1_task2_mult_2] p1=0 -> (p1'=0) & (x1'=0);
+	[time1,p1_task3_mult_1,p1_task3_add_2] p1=0 -> (p1'=0) & (x1'=0);
+
+	// lets time pass, but time does not pass as one of the other players wants to do somethin
+	[time1,time0_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,time0_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,time0_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,time0_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,time0_1,p3_task3_add_2] invariant1 -> true;
+	[time1,time0_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p3_task1_mult_1,time0_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p3_task1_mult_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p3_task2_add_1,time0_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p3_task2_add_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p3_task3_mult_1,time0_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p3_task3_mult_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p2_task1_mult_1,time0_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p2_task1_mult_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p2_task2_add_1,time0_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p2_task2_add_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,p2_task3_mult_1,time0_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p3_task1_mult_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p2_task1_mult_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p3_task2_mult_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p2_task2_mult_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p3_task3_add_2] invariant1 -> true;
+	[time1,p2_task3_mult_1,p2_task3_add_2] invariant1 -> true;
+
+	[time1,done2,time3,time0_1,time0_2] invariant1 -> true;
+	[time1,time2,done3,time0_1,time0_2] invariant1 -> true;
+	[time1,done2,done3,time0_1,time0_2] invariant1 -> true;
+
+	// time actually passes as all want time to pas
+	[time1,time2,time3,time0_1,time0_2] invariant1 -> 1.0 : (x1'=min(x1+1,4));
+
+	
+endmodule
+
+// when time can pass in processor 2
+formula invariant2 = (p2=1=>x2+1<=3)&(p2=2=>x2+1<=4);
+
+module P2	//processor2
+
+	p2 : [0..2]; // p2=0 idle , p2=1 addition, p2=2 multiplication
+	x2 : [0..5];
+
+	// a processors only decision is between letting time pass and when a task completes
+	// can only let time pass when the invariant remains satisfied
+	
+	// however if one of the other players performs an action which is not letting time pass
+	// no time passes
+	// and if the scheduler schedules a task on this process then the state changes
+
+	// lets time pass but addition is scheduled
+	[time2,p2_task2_add_1,time0_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p1_task1_mult_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p1_task2_mult_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p1_task3_add_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p3_task1_mult_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p3_task2_mult_2] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task2_add_1,p3_task3_add_2] p2=0 -> (p2'=1) & (x2'=0);
+
+	[time2,p2_task3_add_2,time0_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p1_task1_mult_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p1_task2_add_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p1_task3_mult_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p3_task1_mult_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p3_task2_add_1] p2=0 -> (p2'=1) & (x2'=0);
+	[time2,p2_task3_add_2,p3_task3_mult_1] p2=0 -> (p2'=1) & (x2'=0);
+	
+	// addition ends (processor chooses this over letting time pass
+	[done2] (p2=1)&(x2=3) -> (p2'=0) & (x2'=0);
+
+	// lets time pass but multiplication is scheduled
+	[time2,p2_task1_mult_1,time0_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p1_task1_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p1_task2_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p1_task3_add_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p3_task1_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p3_task2_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_1,p3_task3_add_2] p2=0 -> (p2'=2) & (x2'=0);
+
+	[time2,p2_task3_mult_1,time0_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p1_task1_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p1_task2_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p1_task3_add_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p3_task1_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p3_task2_mult_2] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task3_mult_1,p3_task3_add_2] p2=0 -> (p2'=2) & (x2'=0);
+
+	[time2,p2_task1_mult_2,time0_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p1_task1_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p1_task2_add_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p1_task3_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p3_task1_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p3_task2_add_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task1_mult_2,p3_task3_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+
+	[time2,p2_task2_mult_2,time0_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p1_task1_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p1_task2_add_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p1_task3_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p3_task1_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p3_task2_add_1] p2=0 -> (p2'=2) & (x2'=0);
+	[time2,p2_task2_mult_2,p3_task3_mult_1] p2=0 -> (p2'=2) & (x2'=0);
+
+	// multiplication ends (processor chooses this over letting time pass
+	[done2] (p2=2)&(x2=4) -> (p2'=0) & (x2'=0);
+
+	// both want to schedule on p2
+	[time2,p2_task1_mult_1,p2_task1_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task1_mult_1,p2_task2_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task1_mult_1,p2_task3_add_2] p2=0 -> (p2'=0) & (x2'=0);
+
+	[time2,p2_task2_add_1,p2_task1_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task2_add_1,p2_task2_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task2_add_1,p2_task3_add_2] p2=0 -> (p2'=0) & (x2'=0);
+
+	[time2,p2_task3_mult_1,p2_task1_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task3_mult_1,p2_task2_mult_2] p2=0 -> (p2'=0) & (x2'=0);
+	[time2,p2_task3_mult_1,p2_task3_add_2] p2=0 -> (p2'=0) & (x2'=0);
+
+	// lets time pass, but time does not pass as one of the other players wants to do somethin
+	[time2,time0_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,time0_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,time0_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,time0_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,time0_1,p1_task3_add_2] invariant2 -> true;
+	[time2,time0_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p1_task1_mult_1,time0_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p1_task1_mult_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p1_task2_add_1,time0_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p1_task2_add_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p1_task3_mult_1,time0_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p1_task3_mult_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p3_task1_mult_1,time0_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p3_task1_mult_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p3_task2_add_1,time0_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p3_task2_add_1,p3_task3_add_2] invariant2 -> true;
+
+	[time2,p3_task3_mult_1,time0_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p1_task1_mult_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p3_task1_mult_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p1_task2_mult_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p3_task2_mult_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p1_task3_add_2] invariant2 -> true;
+	[time2,p3_task3_mult_1,p3_task3_add_2] invariant2 -> true;
+	
+	[time2,done1,time3,time0_1,time0_2] invariant2 -> true;
+	[time2,time1,done3,time0_1,time0_2] invariant2 -> true;
+	[time2,done1,done3,time0_1,time0_2] invariant2 -> true;
+
+	// time actually passes as all want time to pas
+	[time2,time1,time3,time0_1,time0_2] invariant2 -> 1.0 : (x2'=min(x2+1,5));
+
+	
+endmodule
+
+// when time can pass in processor 3
+formula invariant3 = (p3=1=>x3+1<=2)&(p3=2=>x3+1<=3);
+
+module P3	//processor3
+
+	p3 : [0..2]; // p2=0 idle , p2=1 addition, p2=2 multiplication
+	x3 : [0..4];
+
+	// a processors only decision is between letting time pass and when a task completes
+	// can only let time pass when the invariant remains satisfied
+	
+	// however if one of the other players performs an action which is not letting time pass
+	// no time passes
+	// and if the scheduler schedules a task on this process then the state changes
+
+	// lets time pass but addition is scheduled
+	[time3,p3_task2_add_1,time0_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p1_task1_mult_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p1_task2_mult_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p1_task3_add_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p2_task1_mult_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p2_task2_mult_2] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task2_add_1,p2_task3_add_2] p3=0 -> (p3'=1) & (x3'=0);
+
+	[time3,p3_task3_add_2,time0_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p1_task1_mult_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p1_task2_add_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p1_task3_mult_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p2_task1_mult_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p2_task2_add_1] p3=0 -> (p3'=1) & (x3'=0);
+	[time3,p3_task3_add_2,p2_task3_mult_1] p3=0 -> (p3'=1) & (x3'=0);
+	
+	// addition ends (processor chooses this over letting time pass
+	[done3] (p3=1)&(x3=2) -> (p3'=0) & (x3'=0);
+
+	// lets time pass but multiplication is scheduled
+	[time3,p3_task1_mult_1,time0_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p1_task1_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p1_task2_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p1_task3_add_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p2_task1_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p2_task2_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_1,p2_task3_add_2] p3=0 -> (p3'=2) & (x3'=0);
+
+	[time3,p3_task3_mult_1,time0_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p1_task1_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p1_task2_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p1_task3_add_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p2_task1_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p2_task2_mult_2] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task3_mult_1,p2_task3_add_2] p3=0 -> (p3'=2) & (x3'=0);
+
+	[time3,p3_task1_mult_2,time0_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p1_task1_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p1_task2_add_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p1_task3_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p2_task1_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p2_task2_add_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task1_mult_2,p2_task3_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+
+	[time3,p3_task2_mult_2,time0_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p1_task1_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p1_task2_add_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p1_task3_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p2_task1_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p2_task2_add_1] p3=0 -> (p3'=2) & (x3'=0);
+	[time3,p3_task2_mult_2,p2_task3_mult_1] p3=0 -> (p3'=2) & (x3'=0);
+
+
+	// multiplication ends (processor chooses this over letting time pass
+	[done3] (p3=2)&(x3=3) -> (p3'=0) & (x3'=0);
+
+	// both want to schedule on p3
+	[time3,p3_task1_mult_1,p3_task1_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task1_mult_1,p3_task2_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task1_mult_1,p3_task3_add_2] p3=0 -> (p3'=0) & (x3'=0);
+
+	[time3,p3_task2_add_1,p3_task1_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task2_add_1,p3_task2_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task2_add_1,p3_task3_add_2] p3=0 -> (p3'=0) & (x3'=0);
+
+	[time3,p3_task3_mult_1,p3_task1_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task3_mult_1,p3_task2_mult_2] p3=0 -> (p3'=0) & (x3'=0);
+	[time3,p3_task3_mult_1,p3_task3_add_2] p3=0 -> (p3'=0) & (x3'=0);
+
+	// lets time pass, but time does not pass as one of the other players wants to do somethin
+	[time3,time0_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,time0_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,time0_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,time0_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,time0_1,p1_task3_add_2] invariant3 -> true;
+	[time3,time0_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p1_task1_mult_1,time0_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p1_task1_mult_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p1_task2_add_1,time0_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p1_task2_add_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p1_task3_mult_1,time0_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p1_task3_mult_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p2_task1_mult_1,time0_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p2_task1_mult_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p2_task2_add_1,time0_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p2_task2_add_1,p2_task3_add_2] invariant3 -> true;
+
+	[time3,p2_task3_mult_1,time0_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p1_task1_mult_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p2_task1_mult_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p1_task2_mult_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p2_task2_mult_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p1_task3_add_2] invariant3 -> true;
+	[time3,p2_task3_mult_1,p2_task3_add_2] invariant3 -> true;
+	
+	[time3,done1,time2,time0_1,time0_2] invariant3 -> true;
+	[time3,time1,done2,time0_1,time0_2] invariant3 -> true;
+	[time3,done1,done2,time0_1,time0_2] invariant3 -> true;
+
+	// time actually passes as all want time to pas
+	[time3,time1,time2,time0_1,time0_2] invariant3 -> 1.0 : (x3'=min(x3+1,4));
+
+	
+endmodule
+
+// target state (all tasks complete)
+label "tasks_complete1" = (task3_1=4);
+label "tasks_complete2" = (task3_2=4);
+
+rewards "steps"
+	true : 1;
+endrewards
+
+rewards "time"
+	[time3,time1,time2,time0_1,time0_2] true : 1;
+
+	// penalty if two tasks sheduled on the same processor to stop zero loops
+	[p1_task1_mult_1,p1_task1_mult_2] true : 100;
+	[p1_task2_add_1, p1_task1_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task1_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task1_mult_2] true : 100;
+	[p2_task2_add_1, p2_task1_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task1_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task1_mult_2] true : 100;
+	[p3_task2_add_1, p3_task1_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task1_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task2_mult_2] true : 100;
+	[p1_task2_add_1, p1_task2_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task2_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task2_mult_2] true : 100;
+	[p2_task2_add_1, p2_task2_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task2_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task2_mult_2] true : 100;
+	[p3_task2_add_1, p3_task2_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task2_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task3_add_2] true : 100;
+	[p1_task2_add_1, p1_task3_add_2] true : 100;
+	[p1_task3_mult_1,p1_task3_add_2] true : 100;
+
+	[p2_task1_mult_1,p2_task3_add_2] true : 100;
+	[p2_task2_add_1, p2_task3_add_2] true : 100;
+	[p2_task3_mult_1,p2_task3_add_2] true : 100;
+
+	[p3_task1_mult_1,p3_task3_add_2] true : 100;
+	[p3_task2_add_1, p3_task3_add_2] true : 100;
+	[p3_task3_mult_1,p3_task3_add_2] true : 100;
+	
+endrewards
+
+rewards "energy1"
+	[time3,time1,time2,time0_1,time0_2] p1=0 : 10/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_1=1 | task2_1=1 | task3_1=1) & p1>0 : 50;
+	[time3,time1,time2,time0_1,time0_2] p2=0 : 20/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_1=2 | task2_1=2 | task3_1=2) & p2>0 : 30;
+	[time3,time1,time2,time0_1,time0_2] p3=0 : 10/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_1=3 | task2_1=3 | task3_1=3) & p3>0 : 50;
+
+	// penalty if two tasks sheduled on the same processor to stop zero loops
+	[p1_task1_mult_1,p1_task1_mult_2] true : 100;
+	[p1_task2_add_1,p1_task1_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task1_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task1_mult_2] true : 100;
+	[p2_task2_add_1, p2_task1_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task1_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task1_mult_2] true : 100;
+	[p3_task2_add_1,p3_task1_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task1_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task2_mult_2] true : 100;
+	[p1_task2_add_1,p1_task2_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task2_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task2_mult_2] true : 100;
+	[p2_task2_add_1,p2_task2_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task2_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task2_mult_2] true : 100;
+	[p3_task2_add_1,p3_task2_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task2_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task3_add_2] true : 100;
+	[p1_task2_add_1,p1_task3_add_2] true : 100;
+	[p1_task3_mult_1,p1_task3_add_2] true : 100;
+
+	[p2_task1_mult_1,p2_task3_add_2] true : 100;
+	[p2_task2_add_1,p2_task3_add_2] true : 100;
+	[p2_task3_mult_1,p2_task3_add_2] true : 100;
+
+	[p3_task1_mult_1,p3_task3_add_2] true : 100;
+	[p3_task2_add_1,p3_task3_add_2] true : 100;
+	[p3_task3_mult_1,p3_task3_add_2] true : 100;
+
+endrewards
+
+rewards "energy2"
+	[time3,time1,time2,time0_1,time0_2] p1=0 : 10/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_2=1 | task2_2=1 | task3_2=1) & p1>0 : 50;
+	[time3,time1,time2,time0_1,time0_2] p2=0 : 20/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_2=2 | task2_2=2 | task3_2=2) & p2>0 : 30;
+	[time3,time1,time2,time0_1,time0_2] p3=0 : 10/2;
+	[time3,time1,time2,time0_1,time0_2] (task1_2=3 | task2_2=3 | task3_2=3) & p3>0 : 50;
+
+	// penalty if two tasks sheduled on the same processor to stop zero loops
+	[p1_task1_mult_1,p1_task1_mult_2] true : 100;
+	[p1_task2_add_1, p1_task1_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task1_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task1_mult_2] true : 100;
+	[p2_task2_add_1,p2_task1_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task1_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task1_mult_2] true : 100;
+	[p3_task2_add_1,p3_task1_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task1_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task2_mult_2] true : 100;
+	[p1_task2_add_1,p1_task2_mult_2] true : 100;
+	[p1_task3_mult_1,p1_task2_mult_2] true : 100;
+
+	[p2_task1_mult_1,p2_task2_mult_2] true : 100;
+	[p2_task2_add_1,p2_task2_mult_2] true : 100;
+	[p2_task3_mult_1,p2_task2_mult_2] true : 100;
+
+	[p3_task1_mult_1,p3_task2_mult_2] true : 100;
+	[p3_task2_add_1,p3_task2_mult_2] true : 100;
+	[p3_task3_mult_1,p3_task2_mult_2] true : 100;
+
+	[p1_task1_mult_1,p1_task3_add_2] true : 100;
+	[p1_task2_add_1,p1_task3_add_2] true : 100;
+	[p1_task3_mult_1,p1_task3_add_2] true : 100;
+
+	[p2_task1_mult_1,p2_task3_add_2] true : 100;
+	[p2_task2_add_1,p2_task3_add_2] true : 100;
+	[p2_task3_mult_1,p2_task3_add_2] true : 100;
+
+	[p3_task1_mult_1,p3_task3_add_2] true : 100;
+	[p3_task2_add_1,p3_task3_add_2] true : 100;
+	[p3_task3_mult_1,p3_task3_add_2] true : 100;
+
+endrewards
